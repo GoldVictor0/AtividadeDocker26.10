@@ -4,5 +4,5 @@ Como executar
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/oLopesAlvaro/tarefas-docker.git
-   cd tarefas-docker
+   git clone https://github.com/GoldVictor0/AtividadeDocker26.10
+   cd AtividadeDocker26.10

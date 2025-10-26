@@ -1,32 +1,15 @@
-version: "3.8"
-
 services:
-  postgres:
-    image: postgres:15
-    container_name: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: tarefasdb
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - app-network
-
   backend:
     build: ./backend
     container_name: backend
-    restart: always
     ports:
       - "3001:3001"
     environment:
-      - NODE_ENV=production
-      - PORT=3001
       - DB_HOST=postgres
-      - DB_USER=user
-      - DB_PASSWORD=password
-      - DB_NAME=tarefasdb
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=tarefas
+      - DB_PORT=5432
     depends_on:
       - postgres
     networks:
@@ -35,17 +18,33 @@ services:
   frontend:
     build: ./frontend
     container_name: frontend
-    restart: always
     ports:
-      - "5173:80"
+      - "5173:5173"
     depends_on:
       - backend
+    environment:
+      - VITE_API_URL=http://backend:3001
     networks:
       - app-network
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=tarefas
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
 
 networks:
   app-network:
     driver: bridge
-
-volumes:
-  postgres_data:
